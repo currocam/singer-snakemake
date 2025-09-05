@@ -79,8 +79,8 @@ rule all:
         expand(os.path.join(PLOTS_PATH, "pair-coalescence-pdf.png"), chrom=CHROMOSOMES),
         expand(os.path.join(PLOTS_PATH, "pair-coalescence-rates.png"), chrom=CHROMOSOMES),
         expand(os.path.join(TREES_PATH, "{chrom}.{rep}.tsz"), chrom=CHROMOSOMES, rep=range(MCMC_SAMPLES)),
-        expand(os.path.join(TREES_POLEGON_PATH, "{chrom}.{rep}.tsz"), chrom=CHROMOSOMES, rep=range(MCMC_SAMPLES)) if RUN_POLEGON else []
-        expand(os.path.join(TREES_RECOMB_PATH, "{chrom}.{rep}.tsz"), chrom=CHROMOSOMES, rep=range(MCMC_SAMPLES)) if RUN_POLEGON else []
+        expand(os.path.join(TREES_POLEGON_PATH, "{chrom}.{rep}.tsz"), chrom=CHROMOSOMES, rep=range(MCMC_SAMPLES)) if RUN_POLEGON else [],
+        expand(os.path.join(TREES_RECOMB_PATH, "{chrom}.{rep}.tsz"), chrom=CHROMOSOMES, rep=range(MCMC_SAMPLES))
 
 
 checkpoint chunk_chromosomes:
