@@ -80,6 +80,7 @@ rule all:
         expand(os.path.join(PLOTS_PATH, "pair-coalescence-rates.png"), chrom=CHROMOSOMES),
         expand(os.path.join(TREES_PATH, "{chrom}.{rep}.tsz"), chrom=CHROMOSOMES, rep=range(MCMC_SAMPLES)),
         expand(os.path.join(TREES_POLEGON_PATH, "{chrom}.{rep}.tsz"), chrom=CHROMOSOMES, rep=range(MCMC_SAMPLES)) if RUN_POLEGON else []
+        expand(os.path.join(TREES_RECOMB_PATH, "{chrom}.{rep}.tsz"), chrom=CHROMOSOMES, rep=range(MCMC_SAMPLES)) if RUN_POLEGON else []
 
 
 checkpoint chunk_chromosomes:
@@ -210,7 +211,7 @@ rule merge_chunks_full:
         nodes = lambda w: merge_chunks_input(w, "nodes"),
         branches = lambda w: merge_chunks_input(w, "branches"),
     output:
-        trees = os.path.join(TREES_PATH, "{chrom}.{rep}.tsz"),
+        trees = os.path.join(TREES_RECOMB_PATH, "{chrom}.{rep}.tsz"),
     params:
         stratify = STRATIFY_BY,
         version = {"pipeline": VERSION, "singer": SINGER_VERSION},
