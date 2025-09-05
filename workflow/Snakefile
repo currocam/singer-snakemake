@@ -64,6 +64,7 @@ SEED_ARRAY = {n:x for n, x in zip(CHROMOSOMES, np.random.randint(2 ** 20, size=l
 CHROM_PATH = os.path.join(OUTPUT_DIR, "{chrom}")
 PLOTS_PATH = os.path.join(OUTPUT_DIR, "{chrom}", "plots")
 TREES_PATH = os.path.join(OUTPUT_DIR, "{chrom}", "trees")
+TREES_RECOMB_PATH = os.path.join(OUTPUT_DIR, "{chrom}", "trees_recomb")
 TREES_POLEGON_PATH = os.path.join(OUTPUT_DIR, "{chrom}", "polegon")
 CHUNK_PATH = os.path.join(OUTPUT_DIR, "{chrom}", "chunks")
 STATS_PATH = os.path.join(OUTPUT_DIR, "{chrom}", "stats")
@@ -195,6 +196,26 @@ rule merge_chunks:
         version = {"pipeline": VERSION, "singer": SINGER_VERSION},
     script:
         "scripts/merge_chunks.py"
+
+rule merge_chunks_full:
+    """
+    Merge chunks into a single tree sequence with recombination nodes.
+    """
+    input:
+        ratemap = rules.chunk_chromosomes.output.adjusted_mu,
+        metadata = rules.chunk_chromosomes.output.metadata,
+        params = merge_chunks_params,
+        recombs = lambda w: merge_chunks_input(w, "recombs"),
+        muts = lambda w: merge_chunks_input(w, "muts"),
+        nodes = lambda w: merge_chunks_input(w, "nodes"),
+        branches = lambda w: merge_chunks_input(w, "branches"),
+    output:
+        trees = os.path.join(TREES_PATH, "{chrom}.{rep}.tsz"),
+    params:
+        stratify = STRATIFY_BY,
+        version = {"pipeline": VERSION, "singer": SINGER_VERSION},
+    script:
+        "scripts/merge_chunks_full.py"
 
 # Run POLEGON
 rule run_polegon:
